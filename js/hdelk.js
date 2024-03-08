@@ -55,14 +55,16 @@ var hdelk = (function(){
     var edge_bus_highlight_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF'];
     var edge_bus_highlight_width = 6;
 
+    // var g_str_right_triangle = String.fromCodePoint(9205/*9654*//*9656*/);
+    const VECTOR_ORIENTS = Object.freeze({EAST: 0, NORTH: 1, WEST: 2, SOUTH: 3});
+
     /**
      * Creates an SVG diagram from a JSON description.
      * @param {object} graph
      * @param {string} divname
      */
     var layout = function( graph, divname  ) {
-        const elk = new ELK({
-          })
+        const elk = new ELK({})
 
         // create a dummy drawing just to get text sizes
         var drawDummy = SVG(divname).size( 0, 0 ).group();
@@ -230,13 +232,15 @@ var hdelk = (function(){
                     var newItem = { id:item };
                     item = newItem;
                 }
+                // if (item.label)
+                //     item.label = g_str_right_triangle + item.label; // triangle + label
                 ports.unshift( item );
                 if ( !item.layoutOptions )
                     item.layoutOptions = {};
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'WEST'
-             } );
+            } );
         }
 
         var westPorts = child.westPorts;
@@ -252,7 +256,7 @@ var hdelk = (function(){
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'WEST'
-             } );
+            } );
         }
 
         var eastPorts = child.eastPorts;
@@ -268,7 +272,7 @@ var hdelk = (function(){
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'EAST'
-             } );
+            } );
         }
 
         var northPorts = child.northPorts;
@@ -286,7 +290,7 @@ var hdelk = (function(){
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
-             } );
+            } );
         }
 
         var southPorts = child.southPorts;
@@ -304,7 +308,7 @@ var hdelk = (function(){
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'SOUTH'
-             } );
+            } );
         }
 
         var outPorts = child.outPorts;
@@ -314,13 +318,15 @@ var hdelk = (function(){
                     var newItem = { id:item };
                     item = newItem;
                 }
+                // if (item.label)
+                //     item.label = item.label + g_str_right_triangle; // label + triangle
                 ports.push( item );
                 if ( !item.layoutOptions )
                     item.layoutOptions = {};
 
                 if ( !item.layoutOptions[ 'elk.port.side' ] )
                     item.layoutOptions[ 'elk.port.side' ] = 'EAST'
-             } );
+            } );
         }
 
         var parameters = child.parameters;
@@ -342,7 +348,7 @@ var hdelk = (function(){
                     item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
                 if ( !item.layoutOptions[ 'elk.port.index' ] )
                     item.layoutOptions[ 'elk.port.index' ] = ""+index
-             } );
+            } );
         }
 
         // there must be ports by now!
@@ -433,6 +439,9 @@ var hdelk = (function(){
                     item.sources = item.targets;
                     item.targets = s;
                 }
+                if (item.bidir==1 && (item.label == null || item.label == "")) {
+                    item.label = " "; // Avoid too short edge, otherwise the 2 arrow-heads will overlap.
+                }
                 if ( !item.labels && item.label ) {
                     item.labels = [ { text:item.label } ];
                 }
@@ -446,8 +455,9 @@ var hdelk = (function(){
                         }
                         if ( ( item.text || item.text == "" ) && !item.width && !item.height ) {
                             var tempText = drawDummy.text(item.text).style("font-size:" + edge_label_text_size);
-                            item.width = tempText.node.getComputedTextLength() + edge_label_width_padding;
-                            item.height = edge_label_text_size + edge_label_height_padding;
+                            tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
+                            item.width = tempTextBoundingClientRect.width + edge_label_width_padding;
+                            item.height = tempTextBoundingClientRect.height + edge_label_height_padding;
                         }
                     })
                 }
@@ -606,6 +616,30 @@ var hdelk = (function(){
     }
 
     var edge = function( draw, edge, offsetX, offsetY ) {
+        function vectorDirection(dx, dy) {
+            if (dy <= dx && dy >= -dx) {
+                return VECTOR_ORIENTS.EAST;
+            } else if (dy < dx && dy < -dx) {
+                return VECTOR_ORIENTS.NORTH;
+            } else if (dy >= dx && dy <= -dx) {
+                return VECTOR_ORIENTS.WEST;
+            }
+            return VECTOR_ORIENTS.SOUTH;
+        }
+
+        function createInvShortTermVector(termOrient, length) {
+            switch (termOrient) {
+                case VECTOR_ORIENTS.EAST:
+                    return {x: -length, y: 0};
+                case VECTOR_ORIENTS.NORTH:
+                    return {x: 0, y: length};
+                case VECTOR_ORIENTS.WEST:
+                    return {x: length, y: 0};
+                default: // SOUTH
+                    return {x: 0, y: -length};
+            }
+        }
+
         var group = draw.group();
 
         var sections = edge.sections;
@@ -639,9 +673,21 @@ var hdelk = (function(){
                 var endPoint = item.endPoint;
 
                 var bendPoints = item.bendPoints;
+                var termWidth = Math.max(3, width);
 
-                if ( bendPoints == null ) {
-                    group.line( offsetX + startPoint.x, offsetY + startPoint.y, offsetX + endPoint.x, offsetY + endPoint.y ).stroke( { color:color, width:width });
+                var startVector = {x:0, y:0}; // the start edge vector
+                var startOrient = VECTOR_ORIENTS.EAST; // the direction of the start edge
+                var termVector = {x:0, y:0}; // the terminal edge goes into the node's port
+                var termOrient = VECTOR_ORIENTS.EAST; // the direction of the terminal edge
+                var invShortTermVector = {x:0, y:0}; // the short inverted terminal edge vector to create space for the terminal arrow-head
+
+                /* Draw the edge. */
+                if (bendPoints == null) {
+                    termVector.x = endPoint.x - startPoint.x;
+                    termVector.y = endPoint.y - startPoint.y;
+                    termOrient = vectorDirection(termVector.x, termVector.y);
+                    invShortTermVector = createInvShortTermVector(termOrient, termWidth);
+                    group.line(offsetX + startPoint.x - (edge.bidir == 1)*invShortTermVector.x, offsetY + startPoint.y - (edge.bidir == 1)*invShortTermVector.y, offsetX + endPoint.x + invShortTermVector.x, offsetY + endPoint.y + invShortTermVector.y).stroke( { color:color, width:width });
                 } else {
                     var segments = [];
                     segments.push( [ offsetX + startPoint.x, offsetY + startPoint.y ] );
@@ -649,17 +695,69 @@ var hdelk = (function(){
                         segments.push( [ offsetX + item.x, offsetY + item.y ] );
                     } );
                     segments.push( [ offsetX + endPoint.x, offsetY + endPoint.y ] );
+                    startVector = {x: bendPoints[0].x - startPoint.x, y: bendPoints[0].y - startPoint.y};
+                    startOrient = vectorDirection(startVector.x, startVector.y);
+                    var shortStartVector = createInvShortTermVector(startOrient, termWidth); shortStartVector.x *= -1; shortStartVector.y *= -1;
+                    var lastBendPoint = bendPoints[ bendPoints.length - 1 ];
+                    termVector.x = endPoint.x - lastBendPoint.x;
+                    termVector.y = endPoint.y - lastBendPoint.y;
+                    termOrient = vectorDirection(termVector.x, termVector.y);
+                    invShortTermVector = createInvShortTermVector(termOrient, termWidth);
+                    if (edge.bidir == 1) {
+                        segments[0][0] += shortStartVector.x;
+                        segments[0][1] += shortStartVector.y;
+                    }
+                    segments[segments.length - 1][0] += invShortTermVector.x;
+                    segments[segments.length - 1][1] += invShortTermVector.y;
+
                     group.polyline( segments ).fill('none').stroke( { color:color, width:width } );
                 }
 
-                var terminatorWidth_2 = width;
-                if ( terminatorWidth_2 < 3 )
-                    terminatorWidth_2 = 3;
-                if ( edge.reverse )
-                    group.rect( terminatorWidth_2 * 2, terminatorWidth_2 * 2).attr({ fill:color }).move(offsetX + startPoint.x - terminatorWidth_2, offsetY + startPoint.y - terminatorWidth_2 );
-                else
-                    group.rect( terminatorWidth_2 * 2, terminatorWidth_2 * 2).attr({ fill:color }).move(offsetX + endPoint.x - terminatorWidth_2, offsetY + endPoint.y - terminatorWidth_2 );
-
+                /* Draw the arrow-head. */
+                if (edge.reverse) {
+                    switch (termOrient) {
+                        case VECTOR_ORIENTS.EAST:
+                            group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth*2, offsetY + endPoint.y - termWidth );
+                            break;
+                        case VECTOR_ORIENTS.NORTH:
+                            group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
+                            break;
+                        case VECTOR_ORIENTS.WEST:
+                            group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth );
+                            break;
+                        default: // SOUTH
+                            group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth*2);
+                    }
+                } else {
+                    switch (termOrient) {
+                        case VECTOR_ORIENTS.EAST:
+                            group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth*2, offsetY + endPoint.y - termWidth);
+                            break;
+                        case VECTOR_ORIENTS.NORTH:
+                            group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
+                            break;
+                        case VECTOR_ORIENTS.WEST:
+                            group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth);
+                            break;
+                        default: // SOUTH
+                            group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth*2);
+                    }
+                    if (edge.bidir) {
+                        switch (startOrient) {
+                            case VECTOR_ORIENTS.EAST:
+                                group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + startPoint.x, offsetY + startPoint.y - termWidth);
+                                break;
+                            case VECTOR_ORIENTS.NORTH:
+                                group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y - termWidth*2);
+                                break;
+                            case VECTOR_ORIENTS.WEST:
+                                group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + startPoint.x - termWidth*2, offsetY + startPoint.y - termWidth);
+                                break;
+                            default: // SOUTH
+                                group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y);
+                        }
+                    }
+                }
             } );
         }
 
@@ -690,4 +788,3 @@ var hdelk = (function(){
         layout: layout
     };
 })();
-
