@@ -13,7 +13,7 @@ var hdelk = (function(){
 
     var node_highlight_fill_color = ['#FFF', '#DDD', '#4bF', '#F88', '#FE6', '#7e0', '#FF72CA', '#F3E7FF', '#CDD0FF'];
     var node_fill_color = '#FFF';
-    var node_stroke_color = '#666';
+    var node_stroke_color = '#666'; // This is not used in the code.
     var node_highlight_stroke_width = 2;
     var node_stroke_width = 1;
     var node_name_text_color = '#666';
@@ -36,7 +36,7 @@ var hdelk = (function(){
     var port_name_font_size = 12;
     var port_fill_color = '#777';
     var port_text_color = '#FFF';
-    var port_highlight_fill_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF'];
+    var port_highlight_fill_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF']; // It seems that `port_highlight_fill_color` is also used for stroke color.
     var port_spacing = 4;
 
     var edge_label_text_size = 12;
