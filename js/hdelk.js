@@ -137,8 +137,8 @@ var hdelk = (function(){
         }
 
         if ( !child.layoutOptions['elk.nodeSize.options'] ) {
-           child.layoutOptions['elk.nodeSize.options'] = '(' + node_min_width + ',' + node_min_height + ')';
-       }
+            child.layoutOptions['elk.nodeSize.options'] = '(' + node_min_width + ',' + node_min_height + ')';
+        }
 /*
         if ( !child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] ) {
             child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] = "PORT_POSITION NODE_SIZE";
@@ -507,7 +507,7 @@ var hdelk = (function(){
                     nameSize = node_name_font_size;
                     nameColor = ( child.highlight || child.highlight == 0 ) ? node_highlight_name_text_color[ child.highlight ] : node_name_text_color;
                 }
-               var nodeNameText;
+                var nodeNameText;
                 if ( item.type ) {
                     var typeColor = ( child.highlight == 0 ) ? nameColor : node_type_text_color;
 
