@@ -194,9 +194,10 @@ var hdelk = (function(){
                     fontSize = node_port_name_font_size;
                 else
                     fontSize = ( item.type ) ? node_type_font_size : node_name_font_size;
-                item.height = fontSize + node_label_height_padding;
                 var tempText = drawDummy.text(text).style("font-size:"+fontSize);
-                item.width = tempText.node.getComputedTextLength() + node_label_width_padding;
+                tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
+                item.height = tempTextBoundingClientRect.height + node_label_height_padding;
+                item.width = tempTextBoundingClientRect.width + node_label_width_padding;
                 if ( item.width + 10 > calculatedNodeWidth )
                     calculatedNodeWidth = item.width + node_label_width_padding;
                 labelHeight += item.height + node_label_height_padding;
