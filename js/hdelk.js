@@ -456,7 +456,7 @@ var hdelk = (function(){
                         if ( ( item.text || item.text == "" ) && !item.width && !item.height ) {
                             var tempText = drawDummy.text(item.text).style("font-size:" + edge_label_text_size);
                             tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
-                            item.width = tempText.node.getComputedTextLength() + edge_label_width_padding;
+                            item.width = tempTextBoundingClientRect.width + edge_label_width_padding;
                             item.height = tempTextBoundingClientRect.height + edge_label_height_padding;
                         }
                     })
