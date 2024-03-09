@@ -362,9 +362,18 @@ var hdelk = (function(){
                     item.label = item.id;
                 item.id = child.id + "." + item.id;
             }
-            if ( !item.label && item.label != "" )
+            if ( !item.label && item.label != "" ) {
                 item.label = item.id;
-
+            }
+            if (Array.isArray(item.rank)) {
+                var rankString = "";
+                for (var i = 0; i < item.rank.length; i++) {
+                    rankString += "[";
+                    rankString += item.rank[i]-1;
+                    rankString += ":0]";
+                }
+                item.label = rankString + " " + item.label;
+            }
             if ( !item.layoutOptions )
                 item.layoutOptions = {}
 
