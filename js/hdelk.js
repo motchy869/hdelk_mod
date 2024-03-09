@@ -156,6 +156,17 @@ var hdelk = (function(){
             child.layoutOptions['elk.alignment'] = child.alignment;
         }
 
+        // child.layoutOptions['elk.layered.nodePlacement.bk.fixedAlignment'] = 'LEFTUP'; // not sure what this does
+
+        // child.layoutOptions['elk.layered.compaction.connectedComponents'] = true; // Seems to have no effect.
+
+        // child.layoutOptions['elk.layered.wrapping.cutting.strategy'] = 'ARD'; // Seems to have no effect.
+
+        child.layoutOptions['elk.layered.cycleBreaking.strategy'] = 'DEPTH_FIRST'; // dramatically improves layout
+
+        // child.layoutOptions['elk.alg.layered.options.NodePlacementStrategy'] = 'NETWORK_SIMPLEX'; // Seems to have no effect.
+
+        child.layoutOptions['org.eclipse.elk.validateGraph'] = true;
 /*
         if ( !child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] ) {
             child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] = "PORT_POSITION NODE_SIZE";
