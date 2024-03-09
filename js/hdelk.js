@@ -62,14 +62,15 @@ var hdelk = (function(){
      * Creates an SVG diagram from a JSON description.
      * @param {object} graph
      * @param {string} divname
+     * @param {number} elk_thoroughness How much effort should be spent to produce a nice layout. min=1, default=32
      */
-    var layout = function( graph, divname  ) {
+    var layout = function(graph, divname, elk_thoroughness=32) {
         const elk = new ELK({})
 
         // create a dummy drawing just to get text sizes
         var drawDummy = SVG(divname).size( 0, 0 ).group();
 
-        transformNode( drawDummy, graph );
+        transformNode(drawDummy, graph, elk_thoroughness);
 
         drawDummy.clear();
 
@@ -112,9 +113,11 @@ var hdelk = (function(){
 
     /**
      * Takes the child object and recursively transforms sub-objects into a form that Elk.JS can use
+     * @param {object} drawDummy SVG.js object to get text sizes
      * @param {object} child present child node under consideration
+     * @param {number} elk_thoroughness How much effort should be spent to produce a nice layout
      */
-    var transformNode = function( drawDummy, child ) {
+    var transformNode = function(drawDummy, child, elk_thoroughness) {
 
         if ( !child.layoutOptions )
             child.layoutOptions = {};
@@ -141,6 +144,9 @@ var hdelk = (function(){
         if ( !child.layoutOptions['elk.nodeSize.options'] ) {
             child.layoutOptions['elk.nodeSize.options'] = '(' + node_min_width + ',' + node_min_height + ')';
         }
+
+        child.layoutOptions['elk.layered.thoroughness'] = elk_thoroughness;
+        console.log(elk_thoroughness);
 /*
         if ( !child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] ) {
             child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] = "PORT_POSITION NODE_SIZE";
