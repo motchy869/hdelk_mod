@@ -777,8 +777,7 @@ var hdelk = (function(){
                 else
                     edgeText = item.id;
                 var edgeTextItem = group.text(edgeText).style("font-size:"+edge_label_text_size).fill({color:label_color});
-                var edgeTextWidth = edgeTextItem.node.getComputedTextLength();
-                edgeTextItem.move(offsetX + item.x+(item.width-edgeTextWidth)/2, offsetY + item.y + edge_label_height_padding/2);
+                edgeTextItem.move(offsetX + item.x/* + (item.width-edgeTextWidth)/2*/, offsetY + item.y + edge_label_height_padding/2);
 
             })
         }
