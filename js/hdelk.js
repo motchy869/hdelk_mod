@@ -1,3 +1,6 @@
+function isString(obj) {
+    return (typeof obj === 'string' || obj instanceof String);
+}
 
 var hdelk = (function(){
 
@@ -147,6 +150,12 @@ var hdelk = (function(){
 
         child.layoutOptions['elk.layered.thoroughness'] = elk_thoroughness;
         console.log(elk_thoroughness);
+
+        /* Not sure this has effect. */
+        if (isString(child.alignment) && ['AUTOMATIC', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM', 'CENTER'].includes(child.alignment)) {
+            child.layoutOptions['elk.alignment'] = child.alignment;
+        }
+
 /*
         if ( !child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] ) {
             child.layoutOptions[ 'elk.layered.nodePlacement.networkSimplex.nodeFlexibility.default' ] = "PORT_POSITION NODE_SIZE";
