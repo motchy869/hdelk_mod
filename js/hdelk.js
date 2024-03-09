@@ -132,8 +132,8 @@ var hdelk = (function(){
                 child.layoutOptions[ 'elk.nodeLabels.placement' ] = 'V_CENTER H_CENTER INSIDE'; // 'V_TOP H_LEFT INSIDE';
         }
 
-        if ( !child.layoutOptions[ 'elk.portConstraints' ] ) {
-            child.layoutOptions[ 'elk.portConstraints' ] = "FIXED_SIDE";
+        if (!child.layoutOptions[ 'elk.portConstraints' ]) {
+            child.layoutOptions[ 'elk.portConstraints' ] = (child.fixPortOrder) ? "FIXED_ORDER" : "FIXED_SIDE";
         }
 
         if ( !child.layoutOptions[ 'elk.nodeSize.constraints' ] ) {
