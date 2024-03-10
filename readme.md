@@ -1,57 +1,22 @@
+# HDElk mod
 
-![](images/banner.png)
+![banner](images/banner_2.png)
 
-# HDElk
+This is a fork of [HDElk](https://github.com/davidthings/hdelk).
+Some features are added:
 
-HDElk is a web-based HDL diagramming tool. It was designed to permit the easy visual representation of Verilog or VHDL (generically HDL’s, Hardware Description Languages) in web pages by creation of simple javascript specification objects.
+## 1. New features
 
-The HDElk [website](https://davidthings.github.io/hdelk/) has an Overview, Installation Instructions and a Tutorial
+1. arrow-head at edge termination
+2. Bi-directional edge with `bidir` option (reverse is not supported)
+3. multi-line node and edge label
+4. show bit-width in port label with `rank` option (e.g.: `rank: [2,8]` automatically appends `[1:0][7:0]` to the label)
+5. You can specify `thoroughness` layout algorithm parameter of ELK. `hdelk.layout(graph, "title", [thoroughness]);`
+6. You can fix port orders (do not sort ports in layout calculation) per node.
+7. new colors
 
-## Simple Example
+![new colors](images/new_colors.png)
 
-Here's a simple diagram
+## 2. modified files
 
-![](images/simple_diagram.svg)
-
-
-And here's the code that would generate it on a web page
-
-``` HTML
-<script src="/js/elk.bundled.js"></script>
-<script src="/js/svg.min.js"></script>
-<script src="/js/hdelk.js"></script>
-
-<script type="text/javascript">
-
-    var simple_graph = {
-        id: "",
-        children: [
-            { id: "in", port: 1 },
-            { id: "one", ports: ["in", "out"] },
-            { id: "two", highlight:1, ports: ["in", "out"] },
-            { id: "three", ports: ["in", "out"] },
-            { id: "out", port: 1 }
-        ],
-        edges: [
-            ["in","one.in"],
-            {route:["one.out","two.in"],highlight:1},
-            {route:["two.out","three.in"],highlight:1,bus:1},
-            {route:["three.out","out"], bus:1 }
-        ]
-    }
-
-    hdelk.layout( simple_graph, "simple_diagram" );
-</script>
-
-<div id="simple_diagram"></div>
-```
-
-## Use
-
-Grab the three js files.
-
-Insert the above into an HTML file.
-
-Browse to it.
-
-See the [example.html](example.html) file
+* `js/hdelk.js`
