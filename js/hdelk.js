@@ -121,6 +121,21 @@ var hdelk = (function(){
      * @param {number} elk_thoroughness How much effort should be spent to produce a nice layout
      */
     var transformNode = function(drawDummy, child, elk_thoroughness) {
+        /**
+         * Construct a string that represents the dimensions.
+         * @param {Array<number>} rankArray an array of integers
+         * @returns a string that represents the dimensions
+         * @example input: [2, 3, 4], output: "[1:0][2:0][3:0]"
+         */
+        function constructDimString(rankArray) {
+            var dimString = "";
+            for (var i = 0; i < rankArray.length; ++i) {
+                dimString += "[";
+                dimString += rankArray[i] - 1;
+                dimString += ":0]";
+            }
+            return dimString;
+        }
 
         if ( !child.layoutOptions )
             child.layoutOptions = {};
@@ -391,14 +406,8 @@ var hdelk = (function(){
             if ( !item.label && item.label != "" ) {
                 item.label = item.id;
             }
-            if (Array.isArray(item.rank)) {
-                var rankString = "";
-                for (var i = 0; i < item.rank.length; i++) {
-                    rankString += "[";
-                    rankString += item.rank[i]-1;
-                    rankString += ":0]";
-                }
-                item.label = rankString + " " + item.label;
+            if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the port has a rank property.
+                item.label = constructDimString(item.rank) + " " + item.label;
             }
             if ( !item.layoutOptions )
                 item.layoutOptions = {}
@@ -474,8 +483,11 @@ var hdelk = (function(){
                     item.sources = item.targets;
                     item.targets = s;
                 }
-                if (item.bidir==1 && (item.label == null || item.label == "")) {
-                    item.label = " "; // Avoid too short edge, otherwise the 2 arrow-heads will overlap.
+                if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the edge has a rank property.
+                    item.label = constructDimString(item.rank) + " " + item.label;
+                }
+                if (item.bidir == 1 && (item.label == null || item.label == "")) { // Avoid too short edge with bidirectional property, otherwise the 2 arrow-heads will overlap.
+                    item.label = " ";
                 }
                 if ( !item.labels && item.label ) {
                     item.labels = [ { text:item.label } ];
