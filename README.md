@@ -15,7 +15,8 @@ Some features are added:
 6. You can fix port orders (do not sort ports in layout calculation) per node.
 7. C-style comments in `.jsonc` file (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
 8. Julia-based string interpolation (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
-9. new colors
+9. You can override edge bus visual width by `edge_bus_visual_width` argument of `hdelk.layout` function (e.g. `hdelk.layout(graph, "diagram", edge_bus_visual_width=3)`).
+10. new colors
 
 ![new colors](images/new_colors.png)
 
