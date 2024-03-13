@@ -2,7 +2,7 @@
 
 ![banner](images/banner_2.png)
 
-This is a fork of [HDElk](https://github.com/davidthings/hdelk).
+This is a fork from [HDElk](https://github.com/davidthings/hdelk).
 Some features are added:
 
 ## 1. New features
