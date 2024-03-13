@@ -164,7 +164,6 @@ var hdelk = (function(){
         }
 
         child.layoutOptions['elk.layered.thoroughness'] = elk_thoroughness;
-        console.log(elk_thoroughness);
 
         /* Not sure this has effect. */
         if (isString(child.alignment) && ['AUTOMATIC', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM', 'CENTER'].includes(child.alignment)) {
