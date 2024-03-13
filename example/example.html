@@ -14,26 +14,26 @@
 
     var simple_graph = {
         color:"#EEE",
-    children:[
-        {
-            id:"C1", type:"TypeA", highlight:6,
-            inPorts:[
-                {id: "In"}
-            ],
-            outPorts: [
-                {id: "Out"}
-            ],
-            eastPorts: [
-            {id: "InOut", rank:[2,8]}
-            ]
-        },
-        {id:"C2", type:"TypeB", ports:["In", "Out"], label:"C2\nmultiple-line\nnode name", highlight:7},
-        {id:"C3", type:"TypeC", highlight:8}
-    ],
-    edges:[
-        {route:["C1.InOut","C2.In"], label:"Path1\nbi-directional edge", bus:1, bidir:1},
-        {route: ["C2.Out","C3"], label:"Path2\nmultiple-line", bus:1}
-    ]
+        children:[
+            {
+                id:"C1", type:"TypeA", highlight:6,
+                inPorts:[
+                    {id: "In"}
+                ],
+                outPorts: [
+                    {id: "Out"}
+                ],
+                eastPorts: [
+                {id: "InOut", rank:[2,8]}
+                ]
+            },
+            {id:"C2", type:"TypeB", ports:["In", "Out"], label:"C2\nmultiple-line\nnode name", highlight:7},
+            {id:"C3", type:"TypeC", highlight:8}
+        ],
+        edges:[
+            {route:["C1.InOut","C2.In"], label:"Path1\nbi-directional edge", bus:1, bidir:1},
+            {route: ["C2.Out","C3"], label:"Path2\nmultiple-line", bus:1}
+        ]
     }
 
     hdelk.layout( simple_graph, "simple_diagram");
