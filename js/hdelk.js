@@ -53,7 +53,8 @@ var hdelk = (function(){
     var edge_color = '#888';
     var edge_highlight_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF', '#a1a1a1', '#7fb6ee', '#e57f7f', '#ccc27f', '#adcc7f', '#e17fb9', '#d5b0ff', '#babdff'];
     var edge_highlight_width = 2;
-    var edge_bus_width = 6;
+    const DEFAULT_EDGE_BUS_VISUAL_WIDTH = 6;
+    var g_edge_bus_visual_width = DEFAULT_EDGE_BUS_VISUAL_WIDTH;
     var edge_bus_color = '#AAA';
     var edge_bus_highlight_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF', '#a1a1a1', '#7fb6ee', '#e57f7f', '#ccc27f', '#adcc7f', '#e17fb9', '#d5b0ff', '#babdff'];
     var edge_bus_highlight_width = 6;
@@ -65,9 +66,11 @@ var hdelk = (function(){
      * Creates an SVG diagram from a JSON description.
      * @param {object} graph
      * @param {string} divname
+     * @param {number} edge_bus_visual_width Override the default edge bus width.
      * @param {number} elk_thoroughness How much effort should be spent to produce a nice layout. min=1, default=32
      */
-    var layout = function(graph, divname, elk_thoroughness=32) {
+    var layout = function(graph, divname, edge_bus_visual_width = DEFAULT_EDGE_BUS_VISUAL_WIDTH, elk_thoroughness=32) {
+        g_edge_bus_visual_width = edge_bus_visual_width;
         const elk = new ELK({})
 
         // create a dummy drawing just to get text sizes
@@ -121,6 +124,21 @@ var hdelk = (function(){
      * @param {number} elk_thoroughness How much effort should be spent to produce a nice layout
      */
     var transformNode = function(drawDummy, child, elk_thoroughness) {
+        /**
+         * Construct a string that represents the dimensions.
+         * @param {Array<number>} rankArray an array of integers
+         * @returns a string that represents the dimensions
+         * @example input: [2, 3, 4], output: "[1:0][2:0][3:0]"
+         */
+        function constructDimString(rankArray) {
+            var dimString = "";
+            for (var i = 0; i < rankArray.length; ++i) {
+                dimString += "[";
+                dimString += rankArray[i] - 1;
+                dimString += ":0]";
+            }
+            return dimString;
+        }
 
         if ( !child.layoutOptions )
             child.layoutOptions = {};
@@ -149,7 +167,6 @@ var hdelk = (function(){
         }
 
         child.layoutOptions['elk.layered.thoroughness'] = elk_thoroughness;
-        console.log(elk_thoroughness);
 
         /* Not sure this has effect. */
         if (isString(child.alignment) && ['AUTOMATIC', 'LEFT', 'RIGHT', 'TOP', 'BOTTOM', 'CENTER'].includes(child.alignment)) {
@@ -391,14 +408,8 @@ var hdelk = (function(){
             if ( !item.label && item.label != "" ) {
                 item.label = item.id;
             }
-            if (Array.isArray(item.rank)) {
-                var rankString = "";
-                for (var i = 0; i < item.rank.length; i++) {
-                    rankString += "[";
-                    rankString += item.rank[i]-1;
-                    rankString += ":0]";
-                }
-                item.label = rankString + " " + item.label;
+            if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the port has a rank property.
+                item.label = constructDimString(item.rank) + " " + item.label;
             }
             if ( !item.layoutOptions )
                 item.layoutOptions = {}
@@ -474,8 +485,11 @@ var hdelk = (function(){
                     item.sources = item.targets;
                     item.targets = s;
                 }
-                if (item.bidir==1 && (item.label == null || item.label == "")) {
-                    item.label = " "; // Avoid too short edge, otherwise the 2 arrow-heads will overlap.
+                if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the edge has a rank property.
+                    item.label = constructDimString(item.rank) + " " + item.label;
+                }
+                if (item.bidir == 1 && (item.label == null || item.label == "")) { // Avoid too short edge with bidirectional property, otherwise the 2 arrow-heads will overlap.
+                    item.label = " ";
                 }
                 if ( !item.labels && item.label ) {
                     item.labels = [ { text:item.label } ];
@@ -691,7 +705,7 @@ var hdelk = (function(){
             }
         } else {
             if ( edge.bus ) {
-                width = edge_bus_width;
+                width = g_edge_bus_visual_width;
                 color = edge_bus_color[ edge.highlight ];
             } else {
                 width = edge_width;
@@ -699,7 +713,7 @@ var hdelk = (function(){
             }
         }
 
-        //         var width = ( edge.bus ) ? ( edge.highlight ?  edge_bus_highlight_width : edge_bus_width ) : ( edge.highlight ? edge_highlight_width : edge_width );
+        //         var width = ( edge.bus ) ? ( edge.highlight ?  edge_bus_highlight_width : g_edge_bus_visual_width ) : ( edge.highlight ? edge_highlight_width : edge_width );
         // var color = ( edge.bus ) ? ( edge.highlight ? edge_bus_highlight_color[ edge.highlight ] : edge_bus_color ): ( edge.highlight ? edge_highlight_color[ edge.highlight ] : edge_color );
 
         if ( sections ) {
