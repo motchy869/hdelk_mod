@@ -60,3 +60,9 @@ To render this HTML file, make sure that **HDElk's `js` folder is in the same di
 ## 3. modified files
 
 - `js/hdelk.js`
+
+## 4. LICENSE
+
+HDElk depends the following libraries:
+
+- elkjs v0.9.2: `LICENSE_elkjs.md`
