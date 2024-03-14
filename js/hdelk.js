@@ -84,41 +84,41 @@ var hdelk = (function(){
         drawDummy.clear();
 
         var mp = document.getElementById( divname + "_message" );
-        if ( mp ) {
+        if (mp) {
             mp.style.display = "none";
         }
 
         try {
             var ep = elk.layout(graph);
 
-            ep.then(function(g) {
-                var dp = document.getElementById( divname + "_preprocessed" );
-                if ( dp ) {
+            ep.then(function (g) {
+                var dp = document.getElementById(divname + "_preprocessed");
+                if (dp) {
                     dp.innerHTML = "<pre style='font-size:10px'>" + JSON.stringify(graph, null, " ") + "</pre>";
                 }
 
-                var d = document.getElementById( divname + "_elk" );
-                if ( d ) {
+                var d = document.getElementById(divname + "_elk");
+                if (d) {
                     d.innerHTML = "<pre style='font-size:8px'>" + JSON.stringify(g, null, " ") + "</pre>";
                 }
 
-                diagram( divname, g );
+                diagram(divname, g);
 
             })
 
-            ep.catch( function(err){
-                var dp = document.getElementById( divname );
+            ep.catch(function (err) {
+                var dp = document.getElementById(divname);
                 dp.innerHTML = "";
-                var mp = document.getElementById( divname + "_message" );
-                if ( mp ) {
+                var mp = document.getElementById(divname + "_message");
+                if (mp) {
                     mp.innerHTML = err;
                     mp.style.display = "block";
                 }
             })
-        } catch( err ) {
-            var dp = document.getElementById( divname );
+        } catch (err) {
+            var dp = document.getElementById(divname);
             dp.innerHTML = "";
-            console.log( err );
+            console.log(err);
         }
     }
 
@@ -145,31 +145,31 @@ var hdelk = (function(){
             return dimString;
         }
 
-        if ( !child.layoutOptions ) {
+        if (!child.layoutOptions) {
             child.layoutOptions = {};
         }
 
-        if ( !child.layoutOptions[ 'elk.nodeLabels.placement' ] ) {
-            if ( child.children && child.children.length > 0 ) {
-                child.layoutOptions[ 'elk.nodeLabels.placement' ] = 'V_TOP H_CENTER INSIDE';
+        if (!child.layoutOptions['elk.nodeLabels.placement']) {
+            if (child.children && child.children.length > 0) {
+                child.layoutOptions['elk.nodeLabels.placement'] = 'V_TOP H_CENTER INSIDE';
             } else {
-                child.layoutOptions[ 'elk.nodeLabels.placement' ] = 'V_CENTER H_CENTER INSIDE'; // 'V_TOP H_LEFT INSIDE';
+                child.layoutOptions['elk.nodeLabels.placement'] = 'V_CENTER H_CENTER INSIDE'; // 'V_TOP H_LEFT INSIDE';
             }
         }
 
-        if (!child.layoutOptions[ 'elk.portConstraints' ]) {
-            child.layoutOptions[ 'elk.portConstraints' ] = (child.fixPortOrder) ? "FIXED_ORDER" : "FIXED_SIDE";
+        if (!child.layoutOptions['elk.portConstraints']) {
+            child.layoutOptions['elk.portConstraints'] = (child.fixPortOrder) ? "FIXED_ORDER" : "FIXED_SIDE";
         }
 
-        if ( !child.layoutOptions[ 'elk.nodeSize.constraints' ] ) {
-            child.layoutOptions[ 'elk.nodeSize.constraints' ] = "NODE_LABELS PORTS MINIMUM_SIZE";
+        if (!child.layoutOptions['elk.nodeSize.constraints']) {
+            child.layoutOptions['elk.nodeSize.constraints'] = "NODE_LABELS PORTS MINIMUM_SIZE";
         }
 
-        if ( !child.layoutOptions[ 'elk.spacing.portPort' ] ) {
-            child.layoutOptions[ 'elk.spacing.portPort' ] = port_spacing;
+        if (!child.layoutOptions['elk.spacing.portPort']) {
+            child.layoutOptions['elk.spacing.portPort'] = port_spacing;
         }
 
-        if ( !child.layoutOptions['elk.nodeSize.options'] ) {
+        if (!child.layoutOptions['elk.nodeSize.options']) {
             child.layoutOptions['elk.nodeSize.options'] = '(' + node_min_width + ',' + node_min_height + ')';
         }
 
@@ -201,13 +201,13 @@ var hdelk = (function(){
         }
 
         */
-        if ( !child.id && child.id != "" )
+        if (!child.id && child.id != "")
             child.id = "";
 
-        if ( !child.label && child.label != "" )
+        if (!child.label && child.label != "")
             child.label = child.id
 
-        if ( child.port ) {
+        if (child.port) {
             // if ( !child.height )
             //     child.height = node_port_height;
             //     if ( child.ports )
@@ -218,57 +218,57 @@ var hdelk = (function(){
             //     if ( child.width == 0 )
             //        child.width = 6;
             // }
-            if ( !child.color ) {
-                child.color = (child.highlight || child.highlight == 0 ) ? port_highlight_fill_color[ child.highlight ]: node_port_fill_color;
+            if (!child.color) {
+                child.color = (child.highlight || child.highlight == 0) ? port_highlight_fill_color[child.highlight] : node_port_fill_color;
             }
         }
 
-        if ( !child.labels ) {
-            child.labels = [ ];
+        if (!child.labels) {
+            child.labels = [];
         }
 
-        if ( child.label ) {
-            child.labels.push( { text:child.label } );
+        if (child.label) {
+            child.labels.push({ text: child.label });
         }
 
-        if ( child.type ) {
-            child.labels.push( { text:child.type, type:true } );
+        if (child.type) {
+            child.labels.push({ text: child.type, type: true });
         }
 
         if (isString(child.desc)) {
-            child.labels.push({text:child.desc, desc:true});
+            child.labels.push({ text: child.desc, desc: true });
         }
 
         var labels = child.labels;
-        var calculatedNodeWidth = ( child.port ) ? node_port_width : node_min_width;
-        var calculatedNodeHeight = ( child.port ) ? node_port_height : node_min_height;
+        var calculatedNodeWidth = (child.port) ? node_port_width : node_min_width;
+        var calculatedNodeHeight = (child.port) ? node_port_height : node_min_height;
         var labelHeight = 5;
-        if ( labels ) {
-            labels.forEach( function( item, index ) {
-                var text = ( item.text ) ? item.text : "";
+        if (labels) {
+            labels.forEach(function (item, index) {
+                var text = (item.text) ? item.text : "";
                 var fontSize;
                 if (child.port) {
                     fontSize = node_port_name_font_size_pt;
                 } else {
                     fontSize = (item.type) ? node_type_font_size_pt :
-                    ((item.desc != null) ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0) * node_name_font_size_pt;
+                        ((item.desc != null) ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0) * node_name_font_size_pt;
                 }
                 var tempText = drawDummy.text(text).style("font-size:" + fontSize + "pt");
                 tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
                 item.height = tempTextBoundingClientRect.height + node_label_height_padding;
                 item.width = tempTextBoundingClientRect.width + node_label_width_padding;
-                if ( item.width + 10 > calculatedNodeWidth ) {
+                if (item.width + 10 > calculatedNodeWidth) {
                     calculatedNodeWidth = item.width + node_label_width_padding;
                 }
                 labelHeight += item.height + node_label_height_padding;
-            } );
-            if ( labelHeight > calculatedNodeHeight ) {
+            });
+            if (labelHeight > calculatedNodeHeight) {
                 calculatedNodeHeight = labelHeight;
             }
         }
 
-        if ( !child.color && ( child.highlight || child.highlight == 0 ) ) {
-            child.color = node_highlight_fill_color[ child.highlight ];
+        if (!child.color && (child.highlight || child.highlight == 0)) {
+            child.color = node_highlight_fill_color[child.highlight];
         }
 
         // child.widths are broken when labels are left justified
@@ -279,249 +279,249 @@ var hdelk = (function(){
         // if ( !child.height )
         //     child.height = calculatedNodeHeight;
 
-        if ( !child.ports )
+        if (!child.ports)
             child.ports = [];
 
         var ports = child.ports;
 
         var inPorts = child.inPorts;
-        if ( inPorts ) {
-            inPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (inPorts) {
+            inPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
                 // if (item.label)
                 //     item.label = g_str_right_triangle + item.label; // triangle + label
-                ports.unshift( item );
-                if ( !item.layoutOptions ) {
+                ports.unshift(item);
+                if (!item.layoutOptions) {
                     item.layoutOptions = {};
                 }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'WEST'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'WEST'
                 }
-            } );
+            });
         }
 
         var westPorts = child.westPorts;
-        if ( westPorts ) {
-            westPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (westPorts) {
+            westPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
-                ports.unshift( item );
-                if ( !item.layoutOptions ) {
+                ports.unshift(item);
+                if (!item.layoutOptions) {
                     item.layoutOptions = {};
                 }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'WEST'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'WEST'
                 }
-            } );
+            });
         }
 
         var eastPorts = child.eastPorts;
-        if ( eastPorts ) {
-            eastPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (eastPorts) {
+            eastPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
-                ports.push( item );
-                if ( !item.layoutOptions )
+                ports.push(item);
+                if (!item.layoutOptions)
                     item.layoutOptions = {};
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
-                    item.layoutOptions[ 'elk.port.side' ] = 'EAST'
-            } );
+                if (!item.layoutOptions['elk.port.side'])
+                    item.layoutOptions['elk.port.side'] = 'EAST'
+            });
         }
 
         var northPorts = child.northPorts;
-        if ( northPorts ) {
-            northPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (northPorts) {
+            northPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
-                ports.push( item );
-                if ( !item.layoutOptions ) {
+                ports.push(item);
+                if (!item.layoutOptions) {
                     item.layoutOptions = {};
                 }
 
                 item.vertical = 1;
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'NORTH'
                 }
-            } );
+            });
         }
 
         var southPorts = child.southPorts;
-        if ( southPorts ) {
-            southPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (southPorts) {
+            southPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = {id: item};
                     item = newItem;
                 }
-                ports.push( item );
-                if ( !item.layoutOptions ) {
+                ports.push(item);
+                if (!item.layoutOptions) {
                     item.layoutOptions = {};
                 }
 
                 item.vertical = 1;
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'SOUTH'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'SOUTH'
                 }
-            } );
+            });
         }
 
         var outPorts = child.outPorts;
-        if ( outPorts ) {
-            outPorts.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (outPorts) {
+            outPorts.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
                 // if (item.label)
                 //     item.label = item.label + g_str_right_triangle; // label + triangle
-                ports.push( item );
-                if ( !item.layoutOptions ) {
+                ports.push(item);
+                if (!item.layoutOptions) {
                     item.layoutOptions = {};
                 }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'EAST'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'EAST'
                 }
-            } );
+            });
         }
 
         var parameters = child.parameters;
-        if ( parameters ) {
-            parameters.forEach( function( item, index ){
-                if ( typeof( item ) == "string" ) {
-                    var newItem = { id:item };
+        if (parameters) {
+            parameters.forEach(function (item, index) {
+                if (typeof (item) == "string") {
+                    var newItem = { id: item };
                     item = newItem;
                 }
-                ports.push( item );
+                ports.push(item);
 
                 item.param = 1;
                 item.vertical = 1;
 
-                if ( !item.layoutOptions )
+                if (!item.layoutOptions)
                     item.layoutOptions = {};
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                    item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
+                if (!item.layoutOptions['elk.port.side']) {
+                    item.layoutOptions['elk.port.side'] = 'NORTH'
                 }
-                if ( !item.layoutOptions[ 'elk.port.index' ] ) {
-                    item.layoutOptions[ 'elk.port.index' ] = ""+index
+                if (!item.layoutOptions['elk.port.index']) {
+                    item.layoutOptions['elk.port.index'] = "" + index
                 }
-            } );
+            });
         }
 
         // there must be ports by now!
-        ports.forEach( function( item, index, ports ){
-            if ( typeof( item ) == "string" ) {
-                item = { id:item }
-                ports[ index ] = item;
+        ports.forEach(function (item, index, ports) {
+            if (typeof (item) == "string") {
+                item = { id: item }
+                ports[index] = item;
             }
-            if ( !item.id.includes(".") ) {
-                if ( !item.label && item.label != "" ) {
+            if (!item.id.includes(".")) {
+                if (!item.label && item.label != "") {
                     item.label = item.id;
                 }
                 item.id = child.id + "." + item.id;
             }
-            if ( !item.label && item.label != "" ) {
+            if (!item.label && item.label != "") {
                 item.label = item.id;
             }
             if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the port has a rank property.
                 item.label = constructDimString(item.rank) + " " + item.label;
             }
-            if ( !item.layoutOptions ) {
+            if (!item.layoutOptions) {
                 item.layoutOptions = {}
             }
 
-            if ( !item.layoutOptions[ 'elk.port.side' ] ) {
-                item.layoutOptions[ 'elk.port.side' ] = 'SIDES_EAST_WEST'
+            if (!item.layoutOptions['elk.port.side']) {
+                item.layoutOptions['elk.port.side'] = 'SIDES_EAST_WEST'
             }
 
-            if ( !item.width ) {
+            if (!item.width) {
                 var tempText = drawDummy.text(item.label).style("font-size:" + port_name_font_size_pt + "pt");
                 item.width = tempText.node.getComputedTextLength() + port_width_padding;
             }
-            if ( !item.height ) {
+            if (!item.height) {
                 item.height = port_height;
             }
 
             // swap!
-            if ( item.vertical ) {
+            if (item.vertical) {
                 var t = item.width;
                 item.width = item.height;
                 item.height = t;
             }
-        } )
+        })
 
         var edges = child.edges;
-        if ( edges ) {
-            edges.forEach( function( item, index, edges ) {
-                if ( Array.isArray( item ) ) {
-                    var newItem = {  }
-                    edges[ index ] = newItem;
-                    newItem.sources = [ item[ 0 ] ];
-                    newItem.targets = [ item[ 1 ] ];
-                    if ( item[ 2 ] ) {
-                        if ( typeof( item[2] ) == "string" ) {
-                            newItem.label = item[ 2 ];
-                        } else if ( item[ 2 ] == -1 ) {
+        if (edges) {
+            edges.forEach(function (item, index, edges) {
+                if (Array.isArray(item)) {
+                    var newItem = {}
+                    edges[index] = newItem;
+                    newItem.sources = [item[0]];
+                    newItem.targets = [item[1]];
+                    if (item[2]) {
+                        if (typeof (item[2]) == "string") {
+                            newItem.label = item[2];
+                        } else if (item[2] == -1) {
                             newItem.reverse = 1;
                         } else {
-                            if ( item[2 ] == 1 ) {
+                            if (item[2] == 1) {
                                 newItem.bus = 1;
                             }
                         }
                     }
-                    if ( item[ 3 ] ) {
-                        if ( typeof( item[3] ) == "string" ) {
-                            newItem.label = item[ 3 ];
-                        } else if ( item[ 3 ] == -1 ) {
+                    if (item[3]) {
+                        if (typeof (item[3]) == "string") {
+                            newItem.label = item[3];
+                        } else if (item[3] == -1) {
                             newItem.reverse = 1;
                         } else {
-                            if ( item[3 ] == 1 ) {
+                            if (item[3] == 1) {
                                 newItem.bus = 1;
                             }
                         }
                     }
-                    if ( item[ 4 ] ) {
-                        if ( typeof( item[4] ) == "string" ) {
-                            newItem.label = item[ 4 ];
-                        } else if ( item[ 4 ] == -1 ) {
+                    if (item[4]) {
+                        if (typeof (item[4]) == "string") {
+                            newItem.label = item[4];
+                        } else if (item[4] == -1) {
                             newItem.reverse = 1;
                             // flip the source and target
                         } else {
-                            if ( item[ 4 ] == 1 ) {
+                            if (item[4] == 1) {
                                 newItem.bus = 1;
                             }
                         }
                     }
                     item = newItem;
                 }
-                if ( !item.id ) {
+                if (!item.id) {
                     item.id = child.id + "E" + index;
                 }
-                if ( !item.sources && item.source ) {
-                    item.sources = [ item.source ];
+                if (!item.sources && item.source) {
+                    item.sources = [item.source];
                 }
-                if ( !item.targets && item.target ) {
-                    item.targets = [ item.target ];
+                if (!item.targets && item.target) {
+                    item.targets = [item.target];
                 }
-                if ( ( !item.sources || !item.targets ) && item.route ) {
-                    item.sources = [ item.route[ 0 ] ];
-                    item.targets = [ item.route[ 1 ] ];
+                if ((!item.sources || !item.targets) && item.route) {
+                    item.sources = [item.route[0]];
+                    item.targets = [item.route[1]];
                 }
-                if ( item.reverse ) {
+                if (item.reverse) {
                     var s = item.sources;
                     item.sources = item.targets;
                     item.targets = s;
@@ -532,22 +532,22 @@ var hdelk = (function(){
                 if (item.bidir == 1 && (item.label == null || item.label == "")) { // Avoid too short edge with bidirectional property, otherwise the 2 arrow-heads will overlap.
                     item.label = " ";
                 }
-                if ( !item.labels && item.label ) {
-                    item.labels = [ { text:item.label } ];
+                if (!item.labels && item.label) {
+                    item.labels = [{ text: item.label }];
                 }
                 if (isString(item.desc)) {
-                    item.labels.push({text:item.desc, desc:true});
+                    item.labels.push({ text: item.desc, desc: true });
                 }
                 var labels = item.labels;
-                if ( labels ) {
-                    labels.forEach( function( item, index ) {
-                        if ( typeof( item ) == "string" ) {
-                            var newItem = { text:item }
-                            labels[ index ] = newItem;
+                if (labels) {
+                    labels.forEach(function (item, index) {
+                        if (typeof (item) == "string") {
+                            var newItem = { text: item }
+                            labels[index] = newItem;
                             item = newItem;
                         }
-                        if ( ( item.text || item.text == "" ) && !item.width && !item.height ) {
-                            const tempFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0)*edge_label_text_size_pt;
+                        if ((item.text || item.text == "") && !item.width && !item.height) {
+                            const tempFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0) * edge_label_text_size_pt;
                             const tempText = drawDummy.text(item.text).style("font-size:" + tempFontSize + "pt");
                             tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
                             item.width = tempTextBoundingClientRect.width + edge_label_width_padding;
@@ -555,14 +555,14 @@ var hdelk = (function(){
                         }
                     })
                 }
-            } );
+            });
         }
 
         var children = child.children;
-        if ( children ) {
-            children.forEach( function( item, index ) {
-                transformNode( drawDummy, item  );
-            } );
+        if (children) {
+            children.forEach(function (item, index) {
+                transformNode(drawDummy, item);
+            });
         }
     }
 
@@ -572,82 +572,82 @@ var hdelk = (function(){
      * @param {elkObject} diagram_layout
      * @returns {string} svg
      */
-    var diagram = function( div_id, diagram_layout ) {
+    var diagram = function (div_id, diagram_layout) {
 
         var diagramElement = document.getElementById(div_id);
         diagramElement.innerHTML = "";
 
-        var draw = SVG(div_id).size( diagram_layout.width, diagram_layout.height );
+        var draw = SVG(div_id).size(diagram_layout.width, diagram_layout.height);
 
-        node( draw, diagram_layout, 0, 0 );
+        node(draw, diagram_layout, 0, 0);
     }
 
-    var node = function( draw, child, offsetX, offsetY ) {
+    var node = function (draw, child, offsetX, offsetY) {
         var group = draw.group();
 
         var childColor;
-        if ( child.color )
+        if (child.color)
             childColor = child.color;
         else
             childColor = node_fill_color;
 
-        var portColor = ( child.highlight || child.highlight == 0 ) ? port_highlight_fill_color[ child.highlight ] : port_fill_color;
+        var portColor = (child.highlight || child.highlight == 0) ? port_highlight_fill_color[child.highlight] : port_fill_color;
 
-        node_body( group, child.id, child.x + offsetX, child.y + offsetY, child.width, child.height, childColor, child.highlight, portColor, child.constant );
+        node_body(group, child.id, child.x + offsetX, child.y + offsetY, child.width, child.height, childColor, child.highlight, portColor, child.constant);
 
         var labels = child.labels;
-        if ( labels ) {
-            labels.forEach( function( item, index ){
+        if (labels) {
+            labels.forEach(function (item, index) {
                 // group.rect( item.width, item.height ).attr({ fill:"#EEE" }).move(offsetX + child.x+item.x, offsetY + child.y+item.y );
 
-                var labelText = ( ( item.text || item.text == "" ) ? item.text : item.id );
+                var labelText = ((item.text || item.text == "") ? item.text : item.id);
                 var nameSize;
                 var nameColor;
-                if ( child.port ) {
+                if (child.port) {
                     nameSize = node_port_name_font_size_pt;
                     nameColor = node_port_name_text_color;
                 } else {
                     nameSize = node_name_font_size_pt;
-                    nameColor = ( child.highlight || child.highlight == 0 ) ? node_highlight_name_text_color[ child.highlight ] : node_name_text_color;
+                    nameColor = (child.highlight || child.highlight == 0) ? node_highlight_name_text_color[child.highlight] : node_name_text_color;
                 }
                 var nodeNameText;
                 if (item.type) {
                     const typeColor = (child.highlight == null) ? node_type_text_color :
                         (child.highlight == 0) ? nameColor : node_highlight_type_text_color[child.highlight];
-                    nodeNameText = group.text(labelText).style("font-size:" + node_type_font_size_pt + "pt").fill({color:typeColor});
+                    nodeNameText = group.text(labelText).style("font-size:" + node_type_font_size_pt + "pt").fill({ color: typeColor });
                 } else if (item.desc) {
                     const descColor = (child.highlight == null) ? node_type_text_color :
                         (child.highlight == 0) ? nameColor : node_highlight_type_text_color[child.highlight];
-                    nodeNameText = group.text(labelText).style("font-size:" + DEFAULT_DESC_FONT_SIZE_SCALER*nameSize + "pt").fill({color:descColor});
+                    nodeNameText = group.text(labelText).style("font-size:" + DEFAULT_DESC_FONT_SIZE_SCALER * nameSize + "pt").fill({ color: descColor });
                 } else {
-                    nodeNameText = group.text(labelText).style("font-size:" + nameSize + "pt").fill({color:nameColor});
+                    nodeNameText = group.text(labelText).style("font-size:" + nameSize + "pt").fill({ color: nameColor });
                 }
-                if ( child.port ) {
+                if (child.port) {
                     var nodeNameTextWidth = nodeNameText.node.getComputedTextLength();
-                    nodeNameText.move(offsetX + child.x+item.x+(item.width-nodeNameTextWidth)/2, offsetY + child.y+item.y + node_label_height_padding/2);
+                    nodeNameText.move(offsetX + child.x + item.x + (item.width - nodeNameTextWidth) / 2, offsetY + child.y + item.y + node_label_height_padding / 2);
                 } else {
-                    nodeNameText.move(offsetX + child.x + item.x, offsetY + child.y + item.y );
+                    nodeNameText.move(offsetX + child.x + item.x, offsetY + child.y + item.y);
                 }
             });
         }
 
         var edges = child.edges;
-        if ( edges ) {
-            edges.forEach( function( item, index ) {
-                edge( group, item, offsetX + child.x, offsetY + child.y );
-            } );
+        if (edges) {
+            edges.forEach(function (item, index) {
+                edge(group, item, offsetX + child.x, offsetY + child.y);
+            });
         }
 
         var children = child.children;
-        if ( children ) {
-            children.forEach( function( item, index ) {
-                node( group, item, child.x + offsetX, child.y + offsetY  );
-            } );
+        if (children) {
+            children.forEach(function (item, index) {
+                node(group, item, child.x + offsetX, child.y + offsetY);
+            });
         }
 
         var ports = child.ports;
-        if ( ports ) {
-            ports.forEach( function( item, index ){
+        if (ports) {
+            ports.forEach(function (item, index) {
                 var portText;
                 if (item.label) {
                     portText = item.label;
@@ -660,8 +660,8 @@ var hdelk = (function(){
                 var fillColor;
                 var nameColor;
 
-                if ( item.param ) {
-                    nameColor = ( child.highlight || child.highlight == 0 ) ? node_highlight_name_text_color[ child.highlight ] : node_name_text_color;
+                if (item.param) {
+                    nameColor = (child.highlight || child.highlight == 0) ? node_highlight_name_text_color[child.highlight] : node_name_text_color;
                     strokeWidth = child.highlight ? node_highlight_stroke_width : node_stroke_width;
                     strokeColor = portColor;
                     fillColor = childColor;
@@ -672,47 +672,47 @@ var hdelk = (function(){
                     fillColor = portColor;
                 }
 
-                group.rect(item.width, item.height).move(offsetX + child.x+item.x,offsetY + child.y+item.y)
-                    .attr({ fill:fillColor, 'stroke-width': strokeWidth, stroke:strokeColor })
-                    .stroke({width:strokeWidth});
-                var portTextItem = group.text(portText).style("font-size:" + port_name_font_size_pt + "pt").fill({color:nameColor});
+                group.rect(item.width, item.height).move(offsetX + child.x + item.x, offsetY + child.y + item.y)
+                    .attr({ fill: fillColor, 'stroke-width': strokeWidth, stroke: strokeColor })
+                    .stroke({ width: strokeWidth });
+                var portTextItem = group.text(portText).style("font-size:" + port_name_font_size_pt + "pt").fill({ color: nameColor });
                 var portTextWidth = portTextItem.node.getComputedTextLength();
 
 
-                if ( item.vertical ) {
+                if (item.vertical) {
                     //group.rect(item.width, item.height).move(offsetX + child.x+item.x,offsetY + child.y+item.y)
                     //                                   .attr({ fill:childColor, 'stroke-width': node_stroke_width, stroke:portColor })
                     //                                   .stroke({width:strokeWidth});
                     //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size_pt).fill({color:nameColor});
                     //var portTextWidth = portTextItem.node.getComputedTextLength();
-                    portTextItem.transform( { rotation:90, cx:0, cy:0  } ).move( offsetY + child.y+item.y+(item.height-portTextWidth)/2, -(offsetX + child.x+item.x+item.width-(item.width-port_name_font_size_pt)/2 + 2) );
+                    portTextItem.transform({ rotation: 90, cx: 0, cy: 0 }).move(offsetY + child.y + item.y + (item.height - portTextWidth) / 2, -(offsetX + child.x + item.x + item.width - (item.width - port_name_font_size_pt) / 2 + 2));
                 } else {
                     //group.rect( item.width, item.height ).attr({ fill:portColor }).move(offsetX + child.x+item.x, offsetY + child.y+item.y );
                     //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size_pt).fill({color:port_text_color});
                     //var portTextWidth = portTextItem.node.getComputedTextLength();
-                        // draw the background
-                    portTextItem.move(offsetX + child.x+item.x+(item.width-portTextWidth)/2, offsetY + child.y+item.y + 2);
+                    // draw the background
+                    portTextItem.move(offsetX + child.x + item.x + (item.width - portTextWidth) / 2, offsetY + child.y + item.y + 2);
                 }
-            } )
+            })
         }
 
         return group;
     }
 
-    var node_body = function( draw, name, x, y, width, height, color, highlight, stroke_color, constant ) {
+    var node_body = function (draw, name, x, y, width, height, color, highlight, stroke_color, constant) {
         var group = draw.group();
         var strokeWidth = highlight ? node_highlight_stroke_width : node_stroke_width;
         var shape;
-        if ( constant ) {
-            shape = group.polygon( [[0,0],[width-node_constant_notch,0],[width,node_constant_notch],[width,height],[0,height]]);
+        if (constant) {
+            shape = group.polygon([[0, 0], [width - node_constant_notch, 0], [width, node_constant_notch], [width, height], [0, height]]);
         } else {
             shape = group.rect(width, height);
         }
-        shape.attr({ fill:color, 'stroke-width': node_stroke_width, stroke:stroke_color }).stroke({width:strokeWidth}).move(x,y);
+        shape.attr({ fill: color, 'stroke-width': node_stroke_width, stroke: stroke_color }).stroke({ width: strokeWidth }).move(x, y);
         return group;
     }
 
-    var edge = function( draw, edge, offsetX, offsetY ) {
+    var edge = function (draw, edge, offsetX, offsetY) {
         function vectorDirection(dx, dy) {
             if (dy <= dx && dy >= -dx) {
                 return VECTOR_ORIENTS.EAST;
@@ -727,13 +727,13 @@ var hdelk = (function(){
         function createInvShortTermVector(termOrient, length) {
             switch (termOrient) {
                 case VECTOR_ORIENTS.EAST:
-                    return {x: -length, y: 0};
+                    return { x: -length, y: 0 };
                 case VECTOR_ORIENTS.NORTH:
-                    return {x: 0, y: length};
+                    return { x: 0, y: length };
                 case VECTOR_ORIENTS.WEST:
-                    return {x: length, y: 0};
+                    return { x: length, y: 0 };
                 default: // SOUTH
-                    return {x: 0, y: -length};
+                    return { x: 0, y: -length };
             }
         }
 
@@ -743,40 +743,40 @@ var hdelk = (function(){
 
         var width;
         var color;
-        if ( edge.highlight || edge.highlight == 0 ) {
-            if ( edge.bus ) {
+        if (edge.highlight || edge.highlight == 0) {
+            if (edge.bus) {
                 width = edge_bus_highlight_width;
-                color = edge_bus_highlight_color[ edge.highlight ];
+                color = edge_bus_highlight_color[edge.highlight];
             } else {
                 width = edge_highlight_width;
-                color = edge_highlight_color[ edge.highlight ];
+                color = edge_highlight_color[edge.highlight];
             }
         } else {
-            if ( edge.bus ) {
+            if (edge.bus) {
                 width = g_edge_bus_visual_width;
-                color = edge_bus_color[ edge.highlight ];
+                color = edge_bus_color[edge.highlight];
             } else {
                 width = edge_width;
-                color = edge_color[ edge.highlight ];
+                color = edge_color[edge.highlight];
             }
         }
 
         //         var width = ( edge.bus ) ? ( edge.highlight ?  edge_bus_highlight_width : g_edge_bus_visual_width ) : ( edge.highlight ? edge_highlight_width : edge_width );
         // var color = ( edge.bus ) ? ( edge.highlight ? edge_bus_highlight_color[ edge.highlight ] : edge_bus_color ): ( edge.highlight ? edge_highlight_color[ edge.highlight ] : edge_color );
 
-        if ( sections ) {
-            sections.forEach( function( item, index ) {
+        if (sections) {
+            sections.forEach(function (item, index) {
                 var startPoint = item.startPoint;
                 var endPoint = item.endPoint;
 
                 var bendPoints = item.bendPoints;
                 var termWidth = Math.max(3, width);
 
-                var startVector = {x:0, y:0}; // the start edge vector
+                var startVector = { x: 0, y: 0 }; // the start edge vector
                 var startOrient = VECTOR_ORIENTS.EAST; // the direction of the start edge
-                var termVector = {x:0, y:0}; // the terminal edge goes into the node's port
+                var termVector = { x: 0, y: 0 }; // the terminal edge goes into the node's port
                 var termOrient = VECTOR_ORIENTS.EAST; // the direction of the terminal edge
-                var invShortTermVector = {x:0, y:0}; // the short inverted terminal edge vector to create space for the terminal arrow-head
+                var invShortTermVector = { x: 0, y: 0 }; // the short inverted terminal edge vector to create space for the terminal arrow-head
 
                 /* Draw the edge. */
                 if (bendPoints == null) {
@@ -784,18 +784,18 @@ var hdelk = (function(){
                     termVector.y = endPoint.y - startPoint.y;
                     termOrient = vectorDirection(termVector.x, termVector.y);
                     invShortTermVector = createInvShortTermVector(termOrient, termWidth);
-                    group.line(offsetX + startPoint.x - (edge.bidir == 1)*invShortTermVector.x, offsetY + startPoint.y - (edge.bidir == 1)*invShortTermVector.y, offsetX + endPoint.x + invShortTermVector.x, offsetY + endPoint.y + invShortTermVector.y).stroke( { color:color, width:width });
+                    group.line(offsetX + startPoint.x - (edge.bidir == 1) * invShortTermVector.x, offsetY + startPoint.y - (edge.bidir == 1) * invShortTermVector.y, offsetX + endPoint.x + invShortTermVector.x, offsetY + endPoint.y + invShortTermVector.y).stroke({ color: color, width: width });
                 } else {
                     var segments = [];
-                    segments.push( [ offsetX + startPoint.x, offsetY + startPoint.y ] );
-                    bendPoints.forEach( function( item ) {
-                        segments.push( [ offsetX + item.x, offsetY + item.y ] );
-                    } );
-                    segments.push( [ offsetX + endPoint.x, offsetY + endPoint.y ] );
-                    startVector = {x: bendPoints[0].x - startPoint.x, y: bendPoints[0].y - startPoint.y};
+                    segments.push([offsetX + startPoint.x, offsetY + startPoint.y]);
+                    bendPoints.forEach(function (item) {
+                        segments.push([offsetX + item.x, offsetY + item.y]);
+                    });
+                    segments.push([offsetX + endPoint.x, offsetY + endPoint.y]);
+                    startVector = { x: bendPoints[0].x - startPoint.x, y: bendPoints[0].y - startPoint.y };
                     startOrient = vectorDirection(startVector.x, startVector.y);
                     var shortStartVector = createInvShortTermVector(startOrient, termWidth); shortStartVector.x *= -1; shortStartVector.y *= -1;
-                    var lastBendPoint = bendPoints[ bendPoints.length - 1 ];
+                    var lastBendPoint = bendPoints[bendPoints.length - 1];
                     termVector.x = endPoint.x - lastBendPoint.x;
                     termVector.y = endPoint.y - lastBendPoint.y;
                     termOrient = vectorDirection(termVector.x, termVector.y);
@@ -807,63 +807,63 @@ var hdelk = (function(){
                     segments[segments.length - 1][0] += invShortTermVector.x;
                     segments[segments.length - 1][1] += invShortTermVector.y;
 
-                    group.polyline( segments ).fill('none').stroke( { color:color, width:width } );
+                    group.polyline(segments).fill('none').stroke({ color: color, width: width });
                 }
 
                 /* Draw the arrow-head. */
                 if (edge.reverse) {
                     switch (termOrient) {
                         case VECTOR_ORIENTS.EAST:
-                            group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth*2, offsetY + endPoint.y - termWidth );
+                            group.polygon([[0, 0], [0, termWidth * 2], [termWidth * 2, termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth * 2, offsetY + endPoint.y - termWidth);
                             break;
                         case VECTOR_ORIENTS.NORTH:
-                            group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
+                            group.polygon([[0, termWidth * 2], [termWidth * 2, termWidth * 2], [termWidth, 0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
                             break;
                         case VECTOR_ORIENTS.WEST:
-                            group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth );
+                            group.polygon([[termWidth * 2, 0], [termWidth * 2, termWidth * 2], [0, termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth);
                             break;
                         default: // SOUTH
-                            group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth*2);
+                            group.polygon([[0, 0], [termWidth * 2, 0], [termWidth, termWidth * 2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth * 2);
                     }
                 } else {
                     switch (termOrient) {
                         case VECTOR_ORIENTS.EAST:
-                            group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth*2, offsetY + endPoint.y - termWidth);
+                            group.polygon([[0, 0], [0, termWidth * 2], [termWidth * 2, termWidth]]).fill(color).move(offsetX + endPoint.x - termWidth * 2, offsetY + endPoint.y - termWidth);
                             break;
                         case VECTOR_ORIENTS.NORTH:
-                            group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
+                            group.polygon([[0, termWidth * 2], [termWidth * 2, termWidth * 2], [termWidth, 0]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y);
                             break;
                         case VECTOR_ORIENTS.WEST:
-                            group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth);
+                            group.polygon([[termWidth * 2, 0], [termWidth * 2, termWidth * 2], [0, termWidth]]).fill(color).move(offsetX + endPoint.x, offsetY + endPoint.y - termWidth);
                             break;
                         default: // SOUTH
-                            group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth*2);
+                            group.polygon([[0, 0], [termWidth * 2, 0], [termWidth, termWidth * 2]]).fill(color).move(offsetX + endPoint.x - termWidth, offsetY + endPoint.y - termWidth * 2);
                     }
                     if (edge.bidir) {
                         switch (startOrient) {
                             case VECTOR_ORIENTS.EAST:
-                                group.polygon([[termWidth*2,0], [termWidth*2,termWidth*2], [0,termWidth]]).fill(color).move(offsetX + startPoint.x, offsetY + startPoint.y - termWidth);
+                                group.polygon([[termWidth * 2, 0], [termWidth * 2, termWidth * 2], [0, termWidth]]).fill(color).move(offsetX + startPoint.x, offsetY + startPoint.y - termWidth);
                                 break;
                             case VECTOR_ORIENTS.NORTH:
-                                group.polygon([[0,0], [termWidth*2,0], [termWidth,termWidth*2]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y - termWidth*2);
+                                group.polygon([[0, 0], [termWidth * 2, 0], [termWidth, termWidth * 2]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y - termWidth * 2);
                                 break;
                             case VECTOR_ORIENTS.WEST:
-                                group.polygon([[0,0], [0,termWidth*2], [termWidth*2,termWidth]]).fill(color).move(offsetX + startPoint.x - termWidth*2, offsetY + startPoint.y - termWidth);
+                                group.polygon([[0, 0], [0, termWidth * 2], [termWidth * 2, termWidth]]).fill(color).move(offsetX + startPoint.x - termWidth * 2, offsetY + startPoint.y - termWidth);
                                 break;
                             default: // SOUTH
-                                group.polygon([[0,termWidth*2], [termWidth*2,termWidth*2], [termWidth,0]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y);
+                                group.polygon([[0, termWidth * 2], [termWidth * 2, termWidth * 2], [termWidth, 0]]).fill(color).move(offsetX + startPoint.x - termWidth, offsetY + startPoint.y);
                         }
                     }
                 }
-            } );
+            });
         }
 
         var labels = edge.labels;
-        if ( labels ) {
+        if (labels) {
 
-            var label_color = ( edge.highlight || edge.highlight == 0 ) ? edge_label_highlight_fill_color[ edge.highlight ] : edge_label_text_color;
+            var label_color = (edge.highlight || edge.highlight == 0) ? edge_label_highlight_fill_color[edge.highlight] : edge_label_text_color;
 
-            labels.forEach( function( item, index ) {
+            labels.forEach(function (item, index) {
 
                 // Handy for debugging layout
                 // group.rect( item.width, item.height ).attr({ fill:edge_label_color }).move(offsetX + item.x, offsetY +item.y );
@@ -874,9 +874,9 @@ var hdelk = (function(){
                 } else {
                     edgeText = item.id;
                 }
-                const edgeTextFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0)*edge_label_text_size_pt;
-                var edgeTextItem = group.text(edgeText).style("font-size:" + edgeTextFontSize + "pt").fill({color:label_color});
-                edgeTextItem.move(offsetX + item.x/* + (item.width-edgeTextWidth)/2*/, offsetY + item.y + edge_label_height_padding/2);
+                const edgeTextFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0) * edge_label_text_size_pt;
+                var edgeTextItem = group.text(edgeText).style("font-size:" + edgeTextFontSize + "pt").fill({ color: label_color });
+                edgeTextItem.move(offsetX + item.x/* + (item.width-edgeTextWidth)/2*/, offsetY + item.y + edge_label_height_padding / 2);
 
             })
         }
