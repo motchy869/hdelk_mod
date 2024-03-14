@@ -9,14 +9,15 @@ Some features are added:
 
 1. arrow-head at edge termination
 2. Bi-directional edge with `bidir` option (reverse is not supported)
-3. multi-line node and edge label
-4. show dimension in port and edge label with `rank` option (e.g.: `rank: [2,8]` automatically appends `[1:0][7:0]` to the label)
-5. You can specify `thoroughness` layout algorithm parameter of ELK. `hdelk.layout(graph, "title", [thoroughness]);`
-6. You can fix port orders (do not sort ports in layout calculation) per node.
-7. C-style comments in `.jsonc` file (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
-8. Julia-based string interpolation (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
-9. You can override edge bus visual width by `edge_bus_visual_width` argument of `hdelk.layout` function (e.g. `hdelk.layout(graph, "diagram", edge_bus_visual_width=3)`).
-10. new colors
+3. show dimension in port and edge label with `rank` option (e.g.: `rank: [2,8]` automatically appends `[1:0][7:0]` to the label)
+4. multi-line node and edge label
+5. You can add description to nodes/edges with `desc` property for them. The description font size is 0.8x (`DEFAULT_DESC_FONT_SIZE_SCALER` in `hdelk.js`) of that for node name / edge label.
+6. You can override edge bus visual width by `edge_bus_visual_width` argument of `hdelk.layout` function (e.g. `hdelk.layout(graph, "diagram", edge_bus_visual_width=3)`).
+7. You can specify `thoroughness` layout algorithm parameter of ELK. `hdelk.layout(graph, "title", [thoroughness]);`
+8. You can fix port orders (do not sort ports in layout calculation) per node.
+9. C-style comments in `.jsonc` file (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
+10. Julia-based string interpolation (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
+11. new colors
 
 ![new colors](images/new_colors.png)
 

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed:
   - Updated elkjs to v0.9.2.
+- Added:
+  - description to nodes/edges with `desc` property for them
 
 ## [0.2.0] - 2024-03-13
 

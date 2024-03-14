@@ -21,13 +21,15 @@ var hdelk = (function(){
     var node_stroke_width = 1;
     var node_name_text_color = '#666';
     var node_highlight_name_text_color = ['#DDD', '#222', '#46C', '#922', '#A90', '#350', '#922061', '#B97AFF', '#0C0FF8', '#909090', '#a1b4e6', '#cc9191', '#d4c97f', '#9aaa7f', '#c890b1', '#dabdff', '#8588fc'];
-    var node_name_font_size = 16;
-    var node_type_text_color = '#666';
-    var node_type_font_size = 12;
+    const FONT_SIZE_SCALER = 0.8;
+    var node_name_font_size_pt = FONT_SIZE_SCALER*16;
+    const node_type_text_color = '#666';
+    const node_highlight_type_text_color = ['#666', '#666', '#444', '#444', '#444', '#444', '#444', '#666',  '#666',    '#666',    '#666',    '#666',    '#666',    '#666',    '#666',    '#666',    '#666']; // Adjust the brightness according to `node_highlight_fill_color`.
+    var node_type_font_size_pt = FONT_SIZE_SCALER*12;
     var node_label_width_padding = 4;
     var node_label_height_padding = 4;
 
-    var node_port_name_font_size = 16;
+    var node_port_name_font_size_pt = FONT_SIZE_SCALER*16;
     var node_port_height = 22;
     var node_port_width = 4;
     var node_port_name_text_color = '#FFF';
@@ -36,13 +38,14 @@ var hdelk = (function(){
     var node_constant_notch = 10;
     var port_height = 18;
     var port_width_padding = 10;
-    var port_name_font_size = 12;
+    var port_name_font_size_pt = FONT_SIZE_SCALER*12;
     var port_fill_color = '#777';
     var port_text_color = '#FFF';
     var port_highlight_fill_color = ['#DDD', '#444', '#06d', '#C00', '#980', '#590', '#C40070', '#AD60FF', '#7579FF', '#a1a1a1', '#7fb6ee', '#e57f7f', '#ccc27f', '#adcc7f', '#e17fb9', '#d5b0ff', '#babdff']; // It seems that `port_highlight_fill_color` is also used for stroke color.
     var port_spacing = 4;
 
-    var edge_label_text_size = 12;
+    var edge_label_text_size_pt = FONT_SIZE_SCALER*12;
+    const DEFAULT_DESC_FONT_SIZE_SCALER = 0.8;
     var edge_label_fill_color = '#EEE';
     var edge_label_text_color = '#777';
     var edge_label_width_padding = 4;
@@ -206,7 +209,7 @@ var hdelk = (function(){
             //     if ( child.ports )
             //         child.height += ( child.ports.length - 1 ) * port_height;
             // if ( !child.width ) {
-            //     var tempText = drawDummy.text(child.label).style("font-size:"+node_port_name_font_size);
+            //     var tempText = drawDummy.text(child.label).style("font-size:"+node_port_name_font_size_pt);
             //     child.width = tempText.node.getComputedTextLength();
             //     if ( child.width == 0 )
             //        child.width = 6;
@@ -227,6 +230,10 @@ var hdelk = (function(){
             child.labels.push( { text:child.type, type:1 } );
         }
 
+        if (isString(child.desc)) {
+            child.labels.push({text:child.desc, desc:1});
+        }
+
         var labels = child.labels;
         var calculatedNodeWidth = ( child.port ) ? node_port_width : node_min_width;
         var calculatedNodeHeight = ( child.port ) ? node_port_height : node_min_height;
@@ -235,11 +242,13 @@ var hdelk = (function(){
             labels.forEach( function( item, index ) {
                 var text = ( item.text ) ? item.text : "";
                 var fontSize;
-                if ( child.port )
-                    fontSize = node_port_name_font_size;
-                else
-                    fontSize = ( item.type ) ? node_type_font_size : node_name_font_size;
-                var tempText = drawDummy.text(text).style("font-size:"+fontSize);
+                if (child.port) {
+                    fontSize = node_port_name_font_size_pt;
+                } else {
+                    fontSize = (item.type) ? node_type_font_size_pt :
+                    ((item.desc != null) ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0) * node_name_font_size_pt;
+                }
+                var tempText = drawDummy.text(text).style("font-size:" + fontSize + "pt");
                 tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
                 item.height = tempTextBoundingClientRect.height + node_label_height_padding;
                 item.width = tempTextBoundingClientRect.width + node_label_width_padding;
@@ -418,7 +427,7 @@ var hdelk = (function(){
                 item.layoutOptions[ 'elk.port.side' ] = 'SIDES_EAST_WEST'
 
             if ( !item.width ) {
-                var tempText = drawDummy.text(item.label).style("font-size:"+port_name_font_size);
+                var tempText = drawDummy.text(item.label).style("font-size:" + port_name_font_size_pt + "pt");
                 item.width = tempText.node.getComputedTextLength() + port_width_padding;
             }
             if ( !item.height )
@@ -494,6 +503,9 @@ var hdelk = (function(){
                 if ( !item.labels && item.label ) {
                     item.labels = [ { text:item.label } ];
                 }
+                if (isString(item.desc)) {
+                    item.labels.push({text:item.desc, desc:1});
+                }
                 var labels = item.labels;
                 if ( labels ) {
                     labels.forEach( function( item, index ) {
@@ -503,7 +515,8 @@ var hdelk = (function(){
                             item = newItem;
                         }
                         if ( ( item.text || item.text == "" ) && !item.width && !item.height ) {
-                            var tempText = drawDummy.text(item.text).style("font-size:" + edge_label_text_size);
+                            const tempFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0)*edge_label_text_size_pt;
+                            const tempText = drawDummy.text(item.text).style("font-size:" + tempFontSize + "pt");
                             tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
                             item.width = tempTextBoundingClientRect.width + edge_label_width_padding;
                             item.height = tempTextBoundingClientRect.height + edge_label_height_padding;
@@ -559,28 +572,31 @@ var hdelk = (function(){
                 var nameSize;
                 var nameColor;
                 if ( child.port ) {
-                    nameSize = node_port_name_font_size;
+                    nameSize = node_port_name_font_size_pt;
                     nameColor = node_port_name_text_color;
-                }
-                else {
-                    nameSize = node_name_font_size;
+                } else {
+                    nameSize = node_name_font_size_pt;
                     nameColor = ( child.highlight || child.highlight == 0 ) ? node_highlight_name_text_color[ child.highlight ] : node_name_text_color;
                 }
                 var nodeNameText;
-                if ( item.type ) {
-                    var typeColor = ( child.highlight == 0 ) ? nameColor : node_type_text_color;
-
-                    nodeNameText = group.text(labelText).style("font-size:"+node_type_font_size).fill({color:typeColor});
+                if (item.type) {
+                    const typeColor = (child.highlight == null) ? node_type_text_color :
+                        (child.highlight == 0) ? nameColor : node_highlight_type_text_color[child.highlight];
+                    nodeNameText = group.text(labelText).style("font-size:" + node_type_font_size_pt + "pt").fill({color:typeColor});
+                } else if (item.desc) {
+                    const descColor = (child.highlight == null) ? node_type_text_color :
+                        (child.highlight == 0) ? nameColor : node_highlight_type_text_color[child.highlight];
+                    nodeNameText = group.text(labelText).style("font-size:" + DEFAULT_DESC_FONT_SIZE_SCALER*nameSize + "pt").fill({color:descColor});
+                } else {
+                    nodeNameText = group.text(labelText).style("font-size:" + nameSize + "pt").fill({color:nameColor});
                 }
-                else
-                    nodeNameText = group.text(labelText).style("font-size:"+nameSize).fill({color:nameColor});
                 if ( child.port ) {
                     var nodeNameTextWidth = nodeNameText.node.getComputedTextLength();
                     nodeNameText.move(offsetX + child.x+item.x+(item.width-nodeNameTextWidth)/2, offsetY + child.y+item.y + node_label_height_padding/2);
-                }
-                else
+                } else {
                     nodeNameText.move(offsetX + child.x + item.x, offsetY + child.y + item.y );
-            } );
+                }
+            });
         }
 
         var edges = child.edges;
@@ -624,9 +640,9 @@ var hdelk = (function(){
                 }
 
                 group.rect(item.width, item.height).move(offsetX + child.x+item.x,offsetY + child.y+item.y)
-                                                   .attr({ fill:fillColor, 'stroke-width': strokeWidth, stroke:strokeColor })
-                                                   .stroke({width:strokeWidth});
-                var portTextItem = group.text(portText).style("font-size:"+port_name_font_size).fill({color:nameColor});
+                    .attr({ fill:fillColor, 'stroke-width': strokeWidth, stroke:strokeColor })
+                    .stroke({width:strokeWidth});
+                var portTextItem = group.text(portText).style("font-size:" + port_name_font_size_pt + "pt").fill({color:nameColor});
                 var portTextWidth = portTextItem.node.getComputedTextLength();
 
 
@@ -634,13 +650,12 @@ var hdelk = (function(){
                     //group.rect(item.width, item.height).move(offsetX + child.x+item.x,offsetY + child.y+item.y)
                     //                                   .attr({ fill:childColor, 'stroke-width': node_stroke_width, stroke:portColor })
                     //                                   .stroke({width:strokeWidth});
-                    //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size).fill({color:nameColor});
+                    //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size_pt).fill({color:nameColor});
                     //var portTextWidth = portTextItem.node.getComputedTextLength();
-                    portTextItem.transform( { rotation:90, cx:0, cy:0  } ).move( offsetY + child.y+item.y+(item.height-portTextWidth)/2, -(offsetX + child.x+item.x+item.width-(item.width-port_name_font_size)/2 + 2) );
-                }
-                else {
+                    portTextItem.transform( { rotation:90, cx:0, cy:0  } ).move( offsetY + child.y+item.y+(item.height-portTextWidth)/2, -(offsetX + child.x+item.x+item.width-(item.width-port_name_font_size_pt)/2 + 2) );
+                } else {
                     //group.rect( item.width, item.height ).attr({ fill:portColor }).move(offsetX + child.x+item.x, offsetY + child.y+item.y );
-                    //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size).fill({color:port_text_color});
+                    //var portTextItem = group.text(portText).style("font-size:"+port_name_font_size_pt).fill({color:port_text_color});
                     //var portTextWidth = portTextItem.node.getComputedTextLength();
                         // draw the background
                     portTextItem.move(offsetX + child.x+item.x+(item.width-portTextWidth)/2, offsetY + child.y+item.y + 2);
@@ -821,11 +836,13 @@ var hdelk = (function(){
                 // group.rect( item.width, item.height ).attr({ fill:edge_label_color }).move(offsetX + item.x, offsetY +item.y );
 
                 var edgeText;
-                if ( item.text)
+                if (item.text) {
                     edgeText = item.text;
-                else
+                } else {
                     edgeText = item.id;
-                var edgeTextItem = group.text(edgeText).style("font-size:"+edge_label_text_size).fill({color:label_color});
+                }
+                const edgeTextFontSize = (item.desc ? DEFAULT_DESC_FONT_SIZE_SCALER : 1.0)*edge_label_text_size_pt;
+                var edgeTextItem = group.text(edgeText).style("font-size:" + edgeTextFontSize + "pt").fill({color:label_color});
                 edgeTextItem.move(offsetX + item.x/* + (item.width-edgeTextWidth)/2*/, offsetY + item.y + edge_label_height_padding/2);
 
             })

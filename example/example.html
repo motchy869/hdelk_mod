@@ -16,7 +16,7 @@
         color:"#EEE",
         children:[
             {
-                id:"C1", type:"TypeA", highlight:6,
+                id:"C1", type:"TypeA", desc: "This is a\ndescription of C1.", highlight:6,
                 inPorts:[
                     {id: "In"}
                 ],
@@ -27,12 +27,12 @@
                 {id: "InOut", rank:[2,8]}
                 ]
             },
-            {id:"C2", type:"TypeB", ports:["In", "Out"], label:"C2\nmultiple-line\nnode name", highlight:7},
+            {id:"C2", type:"TypeB", ports:["In", "Out"], label:"C2\nmultiple-line\nnode label", highlight:7},
             {id:"C3", type:"TypeC", highlight:8}
         ],
         edges:[
             {route:["C1.InOut","C2.In"], label:"Path1\nbi-directional edge", bus:1, bidir:1},
-            {route: ["C2.Out","C3"], label:"Path2\nmultiple-line", bus:1}
+            {route: ["C2.Out","C3"], label:"Path2\nmultiple-line label", desc:"Description can be added.\nThis can be multi-line.", bus:1}
         ]
     }
 
