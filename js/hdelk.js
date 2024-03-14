@@ -227,11 +227,11 @@ var hdelk = (function(){
         }
 
         if ( child.type ) {
-            child.labels.push( { text:child.type, type:1 } );
+            child.labels.push( { text:child.type, type:true } );
         }
 
         if (isString(child.desc)) {
-            child.labels.push({text:child.desc, desc:1});
+            child.labels.push({text:child.desc, desc:true});
         }
 
         var labels = child.labels;
@@ -504,7 +504,7 @@ var hdelk = (function(){
                     item.labels = [ { text:item.label } ];
                 }
                 if (isString(item.desc)) {
-                    item.labels.push({text:item.desc, desc:1});
+                    item.labels.push({text:item.desc, desc:true});
                 }
                 var labels = item.labels;
                 if ( labels ) {
