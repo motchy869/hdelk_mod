@@ -145,14 +145,16 @@ var hdelk = (function(){
             return dimString;
         }
 
-        if ( !child.layoutOptions )
+        if ( !child.layoutOptions ) {
             child.layoutOptions = {};
+        }
 
         if ( !child.layoutOptions[ 'elk.nodeLabels.placement' ] ) {
-            if ( child.children && child.children.length > 0 )
+            if ( child.children && child.children.length > 0 ) {
                 child.layoutOptions[ 'elk.nodeLabels.placement' ] = 'V_TOP H_CENTER INSIDE';
-            else
+            } else {
                 child.layoutOptions[ 'elk.nodeLabels.placement' ] = 'V_CENTER H_CENTER INSIDE'; // 'V_TOP H_LEFT INSIDE';
+            }
         }
 
         if (!child.layoutOptions[ 'elk.portConstraints' ]) {
@@ -216,8 +218,9 @@ var hdelk = (function(){
             //     if ( child.width == 0 )
             //        child.width = 6;
             // }
-            if ( !child.color )
+            if ( !child.color ) {
                 child.color = (child.highlight || child.highlight == 0 ) ? port_highlight_fill_color[ child.highlight ]: node_port_fill_color;
+            }
         }
 
         if ( !child.labels ) {
@@ -254,12 +257,14 @@ var hdelk = (function(){
                 tempTextBoundingClientRect = tempText.node.getBoundingClientRect();
                 item.height = tempTextBoundingClientRect.height + node_label_height_padding;
                 item.width = tempTextBoundingClientRect.width + node_label_width_padding;
-                if ( item.width + 10 > calculatedNodeWidth )
+                if ( item.width + 10 > calculatedNodeWidth ) {
                     calculatedNodeWidth = item.width + node_label_width_padding;
+                }
                 labelHeight += item.height + node_label_height_padding;
             } );
-            if ( labelHeight > calculatedNodeHeight )
+            if ( labelHeight > calculatedNodeHeight ) {
                 calculatedNodeHeight = labelHeight;
+            }
         }
 
         if ( !child.color && ( child.highlight || child.highlight == 0 ) ) {
@@ -289,11 +294,13 @@ var hdelk = (function(){
                 // if (item.label)
                 //     item.label = g_str_right_triangle + item.label; // triangle + label
                 ports.unshift( item );
-                if ( !item.layoutOptions )
+                if ( !item.layoutOptions ) {
                     item.layoutOptions = {};
+                }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'WEST'
+                }
             } );
         }
 
@@ -305,11 +312,13 @@ var hdelk = (function(){
                     item = newItem;
                 }
                 ports.unshift( item );
-                if ( !item.layoutOptions )
+                if ( !item.layoutOptions ) {
                     item.layoutOptions = {};
+                }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'WEST'
+                }
             } );
         }
 
@@ -337,13 +346,15 @@ var hdelk = (function(){
                     item = newItem;
                 }
                 ports.push( item );
-                if ( !item.layoutOptions )
+                if ( !item.layoutOptions ) {
                     item.layoutOptions = {};
+                }
 
                 item.vertical = 1;
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
+                }
             } );
         }
 
@@ -355,13 +366,15 @@ var hdelk = (function(){
                     item = newItem;
                 }
                 ports.push( item );
-                if ( !item.layoutOptions )
+                if ( !item.layoutOptions ) {
                     item.layoutOptions = {};
+                }
 
                 item.vertical = 1;
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'SOUTH'
+                }
             } );
         }
 
@@ -375,11 +388,13 @@ var hdelk = (function(){
                 // if (item.label)
                 //     item.label = item.label + g_str_right_triangle; // label + triangle
                 ports.push( item );
-                if ( !item.layoutOptions )
+                if ( !item.layoutOptions ) {
                     item.layoutOptions = {};
+                }
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'EAST'
+                }
             } );
         }
 
@@ -398,10 +413,12 @@ var hdelk = (function(){
                 if ( !item.layoutOptions )
                     item.layoutOptions = {};
 
-                if ( !item.layoutOptions[ 'elk.port.side' ] )
+                if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                     item.layoutOptions[ 'elk.port.side' ] = 'NORTH'
-                if ( !item.layoutOptions[ 'elk.port.index' ] )
+                }
+                if ( !item.layoutOptions[ 'elk.port.index' ] ) {
                     item.layoutOptions[ 'elk.port.index' ] = ""+index
+                }
             } );
         }
 
@@ -412,8 +429,9 @@ var hdelk = (function(){
                 ports[ index ] = item;
             }
             if ( !item.id.includes(".") ) {
-                if ( !item.label && item.label != "" )
+                if ( !item.label && item.label != "" ) {
                     item.label = item.id;
+                }
                 item.id = child.id + "." + item.id;
             }
             if ( !item.label && item.label != "" ) {
@@ -422,18 +440,21 @@ var hdelk = (function(){
             if (Array.isArray(item.rank)) { // Prepend the dimension to the label if the port has a rank property.
                 item.label = constructDimString(item.rank) + " " + item.label;
             }
-            if ( !item.layoutOptions )
+            if ( !item.layoutOptions ) {
                 item.layoutOptions = {}
+            }
 
-            if ( !item.layoutOptions[ 'elk.port.side' ] )
+            if ( !item.layoutOptions[ 'elk.port.side' ] ) {
                 item.layoutOptions[ 'elk.port.side' ] = 'SIDES_EAST_WEST'
+            }
 
             if ( !item.width ) {
                 var tempText = drawDummy.text(item.label).style("font-size:" + port_name_font_size_pt + "pt");
                 item.width = tempText.node.getComputedTextLength() + port_width_padding;
             }
-            if ( !item.height )
+            if ( !item.height ) {
                 item.height = port_height;
+            }
 
             // swap!
             if ( item.vertical ) {
@@ -452,41 +473,50 @@ var hdelk = (function(){
                     newItem.sources = [ item[ 0 ] ];
                     newItem.targets = [ item[ 1 ] ];
                     if ( item[ 2 ] ) {
-                        if ( typeof( item[2] ) == "string" )
+                        if ( typeof( item[2] ) == "string" ) {
                             newItem.label = item[ 2 ];
-                        else if ( item[ 2 ] == -1 ) {
+                        } else if ( item[ 2 ] == -1 ) {
                             newItem.reverse = 1;
-                        } else
-                            if ( item[2 ] == 1 )
+                        } else {
+                            if ( item[2 ] == 1 ) {
                                 newItem.bus = 1;
+                            }
+                        }
                     }
                     if ( item[ 3 ] ) {
-                        if ( typeof( item[3] ) == "string" )
+                        if ( typeof( item[3] ) == "string" ) {
                             newItem.label = item[ 3 ];
-                        else if ( item[ 3 ] == -1 ) {
+                        } else if ( item[ 3 ] == -1 ) {
                             newItem.reverse = 1;
-                        } else
-                            if ( item[3 ] == 1 )
+                        } else {
+                            if ( item[3 ] == 1 ) {
                                 newItem.bus = 1;
+                            }
+                        }
                     }
                     if ( item[ 4 ] ) {
-                        if ( typeof( item[4] ) == "string" )
+                        if ( typeof( item[4] ) == "string" ) {
                             newItem.label = item[ 4 ];
-                        else if ( item[ 4 ] == -1 ) {
+                        } else if ( item[ 4 ] == -1 ) {
                             newItem.reverse = 1;
                             // flip the source and target
-                        } else
-                            if ( item[ 4 ] == 1 )
+                        } else {
+                            if ( item[ 4 ] == 1 ) {
                                 newItem.bus = 1;
+                            }
+                        }
                     }
                     item = newItem;
                 }
-                if ( !item.id )
+                if ( !item.id ) {
                     item.id = child.id + "E" + index;
-                if ( !item.sources && item.source )
+                }
+                if ( !item.sources && item.source ) {
                     item.sources = [ item.source ];
-                if ( !item.targets && item.target )
+                }
+                if ( !item.targets && item.target ) {
                     item.targets = [ item.target ];
+                }
                 if ( ( !item.sources || !item.targets ) && item.route ) {
                     item.sources = [ item.route[ 0 ] ];
                     item.targets = [ item.route[ 1 ] ];
@@ -619,10 +649,11 @@ var hdelk = (function(){
         if ( ports ) {
             ports.forEach( function( item, index ){
                 var portText;
-                if ( item.label)
+                if (item.label) {
                     portText = item.label;
-                else
+                } else {
                     portText = item.id;
+                }
 
                 var strokeWidth;
                 var strokeColor;
