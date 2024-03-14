@@ -92,17 +92,19 @@ var hdelk = (function(){
             var ep = elk.layout(graph);
 
             ep.then(function(g) {
-                    var dp = document.getElementById( divname + "_preprocessed" );
-                    if ( dp )
-                        dp.innerHTML = "<pre style='font-size:10px'>" + JSON.stringify(graph, null, " ") + "</pre>";
+                var dp = document.getElementById( divname + "_preprocessed" );
+                if ( dp ) {
+                    dp.innerHTML = "<pre style='font-size:10px'>" + JSON.stringify(graph, null, " ") + "</pre>";
+                }
 
-                    var d = document.getElementById( divname + "_elk" );
-                    if ( d )
-                        d.innerHTML = "<pre style='font-size:8px'>" + JSON.stringify(g, null, " ") + "</pre>";
+                var d = document.getElementById( divname + "_elk" );
+                if ( d ) {
+                    d.innerHTML = "<pre style='font-size:8px'>" + JSON.stringify(g, null, " ") + "</pre>";
+                }
 
-                    diagram( divname, g );
+                diagram( divname, g );
 
-                    })
+            })
 
             ep.catch( function(err){
                 var dp = document.getElementById( divname );
