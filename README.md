@@ -14,7 +14,7 @@ Some features are added:
 5. You can add description to nodes/edges with `desc` property for them. The description font size is 0.8x (`DEFAULT_DESC_FONT_SIZE_SCALER` in `hdelk.js`) of that for node name / edge label.
 6. You can override edge bus visual width by `edge_bus_visual_width` argument of `hdelk.layout` function (e.g. `hdelk.layout(graph, "diagram", edge_bus_visual_width=3)`).
 7. You can specify `thoroughness` layout algorithm parameter of ELK. `hdelk.layout(graph, "title", [thoroughness]);`
-8. You can fix port orders (do not sort ports in layout calculation) per node.
+8. You can fix port orders with `fixPortOrder: true` option (prevent from being sorted in layout calculation) per node.
 9. C-style comments in `.jsonc` file (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
 10. Julia-based string interpolation (see: [C-style comments and Julia-based string interpolation](#2-c-style-comments-and-julia-based-string-interpolation))
 11. new colors
